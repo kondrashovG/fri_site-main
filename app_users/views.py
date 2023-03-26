@@ -16,6 +16,7 @@ from django.views import View
 from django.views import generic
 from django.views.generic import TemplateView, UpdateView
 
+from app_accounts.models import Operation, Account, Fund
 from .forms import CustomUserCreationForm, PasswordSetForm, CustomUserChangeForm, ResetPasswordForm
 from .utils import send_email_for_verify, get_referrer
 
@@ -204,9 +205,17 @@ def topup_withdrawal(request):
         'user': request.user, 'title': _('Пополнение / Вывод'), 'current_elem': 'topup_withdrawal',
         'breadcrumbs': {_('Главная'): 'home', _('Личный кабинет'): 'edit_profile', _('Пополнение / Вывод'): 'topup_withdrawal'}
     }
-    print(request.user.id)
-    print(request.user.username)
-    print(request.user.acc.account)
+    # print(request.user.id)
+    # print(request.user.username)
+    # print(request.user.acc.id)
+    # print(context['user'].acc.id)
+    # i = Fund.objects.get(name='Вступительные взносы')
+    # print(i.id)
+    # f_a = Account.objects.get(account=)
+    Operation.objects.create(purpose_of_payment='вступительный взнос', summ=2000,
+                             from_account=Fund.objects.get(name='Вступительные взносы').account,
+                             to_account = context['user'].acc)
+
     return render(
         request,
         'app_users/others/topup_withdrawal.html',
